@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * @author Cesar Polanco
- */
+* @author Cesar Polanco
+*/
 public class Cart {
 
 	public Cart() {
@@ -107,6 +107,4 @@ public class Cart {
 	private BigDecimal _total;
 	private BigDecimal _totalTax;
 
-    addToCart(product);
-  }
 }
