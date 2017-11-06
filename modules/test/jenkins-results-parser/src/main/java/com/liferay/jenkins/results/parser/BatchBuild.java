@@ -49,6 +49,11 @@ public class BatchBuild extends BaseBuild {
 	}
 
 	@Override
+	public String getAppServerHomeDirectory() {
+		return getEnvironment("app.server.home.dir");
+	}
+
+	@Override
 	public String getBrowser() {
 		return getEnvironment("browser");
 	}

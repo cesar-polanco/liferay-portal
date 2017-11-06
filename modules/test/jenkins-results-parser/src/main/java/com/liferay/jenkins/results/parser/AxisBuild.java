@@ -70,6 +70,13 @@ public class AxisBuild extends BaseBuild {
 	}
 
 	@Override
+	public String getAppServerHomeDirectory() {
+		Build parentBuild = getParentBuild();
+
+		return parentBuild.getAppServerHomeDirectory();
+	}
+
+	@Override
 	public String getArchivePath() {
 		if (archiveName == null) {
 			System.out.println(

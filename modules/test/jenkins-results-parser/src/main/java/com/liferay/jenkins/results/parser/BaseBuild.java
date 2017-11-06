@@ -148,6 +148,14 @@ public abstract class BaseBuild implements Build {
 	}
 
 	@Override
+	public void build() {
+		setupBuild();
+		runBuild();
+		// Later we'll want to possibly store the results of teardown
+		teardownBuild();
+	}
+
+	@Override
 	public String getAppServer() {
 		return null;
 	}
@@ -2101,6 +2109,10 @@ public abstract class BaseBuild implements Build {
 		downstreamBuilds.clear();
 	}
 
+	protected void runBuild() {
+		System.out.println("Run Stub.");
+	}
+
 	protected void setBuildNumber(int buildNumber) {
 		if (_buildNumber != buildNumber) {
 			_buildNumber = buildNumber;
@@ -2254,6 +2266,14 @@ public abstract class BaseBuild implements Build {
 		return JenkinsResultsParserUtil.toDateString(
 			date, buildProperties.getProperty("jenkins.report.date.format"),
 			timeZoneName);
+	}
+
+	protected void setupBuild() {
+		System.log.println("Setup Stub.");
+	}
+
+	protected void teardownBuild() {
+		System.log.println("Teardown Stub.");
 	}
 
 	protected void writeArchiveFile(String content, String path)

@@ -30,7 +30,11 @@ public interface Build {
 
 	public void archive(String archiveName);
 
+	public void build();
+
 	public String getAppServer();
+
+	public String getAppServerHomeDirectory();
 
 	public String getArchivePath();
 
