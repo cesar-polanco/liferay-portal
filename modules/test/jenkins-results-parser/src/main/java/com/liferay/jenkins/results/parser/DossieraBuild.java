@@ -31,7 +31,16 @@ public class DossieraBuild extends AxisBuild {
 		createJDBCProperties();
 		createExtProperties();
 		self._db.start();
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		self._db.rebuild(getSqlFileLocation());
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 
 		/*
 			for testhost properties file, we just need database type, database version, then, depending on the version/type, we need to provide the correct commands under the "database.<type>.service.cmd.start/stop" properties.
