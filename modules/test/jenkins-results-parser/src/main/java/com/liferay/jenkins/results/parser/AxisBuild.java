@@ -244,6 +244,13 @@ public class AxisBuild extends BaseBuild {
 	}
 
 	@Override
+	public String getDatabaseVersion() {
+		Build parentBuild = getParentBuild();
+
+		return parentBuild.getDatabaseVersion();
+	}
+
+	@Override
 	public String getDisplayName() {
 		return JenkinsResultsParserUtil.combine(
 			getAxisVariable(), " #", Integer.toString(getBuildNumber()));

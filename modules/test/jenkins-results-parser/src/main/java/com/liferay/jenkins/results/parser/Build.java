@@ -60,6 +60,8 @@ public interface Build {
 
 	public String getDatabase();
 
+	public String getDatabaseVersion();
+
 	public String getDisplayName();
 
 	public int getDownstreamBuildCount(String status);

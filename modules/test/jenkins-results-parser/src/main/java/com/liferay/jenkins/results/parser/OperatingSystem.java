@@ -17,7 +17,6 @@ package com.liferay.jenkins.results.parser;
 /**
  * @author Cesar Polanco
  */
-
 public interface OperatingSystem {
 
 	public void cleanBrowsers();

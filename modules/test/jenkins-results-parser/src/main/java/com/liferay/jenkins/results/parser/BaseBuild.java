@@ -151,7 +151,9 @@ public abstract class BaseBuild implements Build {
 	public void build() {
 		setupBuild();
 		runBuild();
+
 		// Later we'll want to possibly store the results of teardown
+
 		teardownBuild();
 	}
 
@@ -358,7 +360,12 @@ public abstract class BaseBuild implements Build {
 
 	@Override
 	public String getDatabase() {
-		return null;
+		return "stub";
+	}
+
+	@Override
+	public String getDatabaseVersion() {
+		return "stub"
 	}
 
 	@Override

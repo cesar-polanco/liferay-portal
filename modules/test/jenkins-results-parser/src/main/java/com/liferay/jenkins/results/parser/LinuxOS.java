@@ -19,35 +19,31 @@ import java.io.File;
 /**
  * @author Cesar Polanco
  */
-
 public class LinuxOS implements OperatingSystem {
 
 	@Override
 	public void cleanBrowsers() {
-
 	}
 
 	@Override
 	public void cleanDatabases() {
-
 	}
 
 	@Override
 	public void cleanJavaProcesses() {
-
 	}
 
 	@Override
-	public void doCLICommand(String command, String... parameters){
-
+	public void doCLICommand(String command, String... parameters) {
 	}
 
 	@Override
-	public void performGradleTask(String gradleFile, String gradleTask){
+	public void performGradleTask(String gradleFile, String gradleTask) {
+
 		// Need filesystem operations. Here or elsewhere(?)
-		if(!File(gradleFile).exists()){
-			//MirrorsGetTask;do this task somehow
 
+		if (!File(gradleFile).exists()) {
+			//MirrorsGetTask;do this task somehow
 		}
 
 		// OS gradle wrapper suffix is nothing

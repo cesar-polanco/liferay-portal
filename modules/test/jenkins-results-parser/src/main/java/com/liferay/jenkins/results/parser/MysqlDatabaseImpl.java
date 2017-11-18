@@ -17,17 +17,46 @@ package com.liferay.jenkins.results.parser;
 /**
  * @author Cesar Polanco
  */
+public class MysqlDatabaseImpl implements Database {
 
-public class MysqlDatabaseImpl implements Database{
+	MysqlDatabaseImpl(String version) {
+		self._version = version;
+	}
+
+	MysqlDatabaseImpl() {
+		self._version = "5.6";
+	}
 
 	@Override
 	public String databaseDump() {
-
 		return "stub";
 	}
 
 	@Override
-	public void rebuild(String sqlFileLocation) {
+	public String getProperties() {
+		StringBuilder sb = "\n";
+		sb.append("database.type=" + self._type);
+		sb.append("\n");
+		sb.append("database." + self._type + ".version=" + self._version);
 
+		return sb.toString();
 	}
+
+	@Override
+	public void rebuild(String sqlFileLocation) {
+		System.out.println("REBUILD Stub.");
+	}
+
+	@Override
+	public void start() {
+		System.out.println("Start Stub");
+	}
+
+	@Override
+	public void stop() {
+		System.out.println("Stop Stub");
+	}
+
+	private static final String _type = "mysql";
+	private final String _version;
 }

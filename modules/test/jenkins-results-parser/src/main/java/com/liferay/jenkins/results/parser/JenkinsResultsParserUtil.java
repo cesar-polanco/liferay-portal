@@ -15,10 +15,12 @@
 package com.liferay.jenkins.results.parser;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -86,6 +88,24 @@ public class JenkinsResultsParserUtil {
 	};
 
 	public static boolean debug;
+
+	public static void appendToFile(String filename, String content) {
+		if (debug) {
+			System.out.println(
+				"Append file " + file + " with length " + content.length());
+		}
+
+		try (PrintWriter pw = new PrintWriter(
+			new BufferedWriter(
+				new FileWriter(filename, true)))) {
+			pw.print(content + "\n");
+		}
+		catch (Exception e) {
+			System.out.println("Exception when appending to file: ");
+			e.printStackTrace();
+		}
+
+	}
 
 	public static String combine(String...strings) {
 		if ((strings == null) || (strings.length == 0)) {

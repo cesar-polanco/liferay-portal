@@ -64,6 +64,11 @@ public class BatchBuild extends BaseBuild {
 	}
 
 	@Override
+	public String getDatabaseVersion() {
+		return getEnvironment("database.version");
+	}
+
+	@Override
 	public Element getGitHubMessageElement() {
 		Collections.sort(
 			downstreamBuilds, new BaseBuild.BuildDisplayNameComparator());
