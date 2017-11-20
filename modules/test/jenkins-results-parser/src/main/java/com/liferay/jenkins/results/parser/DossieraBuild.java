@@ -173,6 +173,10 @@ public class DossieraBuild extends AxisBuild {
 
 	}
 
+	private void getSqlFileLocation() {
+		
+	}
+
 	private void prepareLog4J() {
 		Build parentBuild = getParentBuild();
 
