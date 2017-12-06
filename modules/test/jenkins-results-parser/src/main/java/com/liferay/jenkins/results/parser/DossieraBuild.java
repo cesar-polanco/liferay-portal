@@ -33,78 +33,28 @@ public class DossieraBuild extends AxisBuild {
 		self._db.start();
 		self._db.rebuild(getSqlFileLocation());
 
-		/*
-			for testhost properties file, we just need database type, database version, then, depending on the version/type, we need to provide the correct commands under the "database.<type>.service.cmd.start/stop" properties.
-			from there; stop the database with the correct command, then set the following in portal-impl-portal-test-ext-props:
-				liferay.home=${liferay.home}
-
-				jdbc.default.driverClassName=${database.driver}
-				jdbc.default.url=${database.url}
-				jdbc.default.username=${database.username}
-				jdbc.default.password=${database.password}
-
-				// HikariCP
-
-				jdbc.default.connectionTimeout=600000
-				jdbc.default.maximumPoolSize=20
-				jdbc.default.minimumIdle=0
-
-				jdbc.counter.maximumPoolSize=5
-				jdbc.counter.minimumIdle=0
-
-				// Tomcat
-
-				jdbc.default.initialSize=0
-				jdbc.default.maxActive=20
-				jdbc.default.maxIdle=0
-				jdbc.default.minIdle=0
-
-				jdbc.counter.initialSize=0
-				jdbc.counter.maxActive=5
-				jdbc.counter.maxIdle=0
-				jdbc.counter.minIdle=0
-
-				counter.jdbc.prefix=jdbc.counter.
-
-				module.framework.base.dir=${liferay.home}/osgi
-
-				sprite.root.dir=/tmp/sprite
-
-				memory.scheduler.org.quartz.threadPool.threadCount=1
-
-				persisted.scheduler.org.quartz.threadPool.threadCount=1
-
-			Add the following to portal-impl/test/system-ext.properties:
-
-				log.sanitizer.enabled=false
-
-			Start the database
-			Acquire the correct JDBC jar, and put it in lib/development
-			Copy the same jar to ${app.server.lib.global.dir}
-			Rebuild the database
-			Prepare log4j
-			Arg line comes from app.server.${type}.start.executable.arg.line, then:
-				if tomcat and code-coverage, add jacoco to the start; otherwise, use what's provided
-			For tomcat specifically:
-				Set "app.server.type" to tomcat, set tomcat version number
-				build distribution, if necessary
-				record test generated properties
-				if available, set the VM host property within portal-web/test/test-portal-web.properties
-			Run-simple-server, with a modified base directory if available.
-				setup-sdk
-					Gradle execute call
-			if asked to do so, take a dump of the legacy database
-			Run PortalLogAssertorTest from the portal-kernel directory
-		*/
-
-
 	}
 
-/*	@Override
+
+
+	@Override
 	protected void setupBuild() {
+		self._appServer.start()
+	}
+
+
+	protected DossieraBuild() {
+		_appServer = "tomcat";
+		_database = "mysql56";
+		_operatingSystem = "centos6";
 
 	}
 
+	protected DossieraBuild() {
+
+	}
+
+/*
 	@Override
 	protected void teardownBuild() {
 
@@ -174,7 +124,7 @@ public class DossieraBuild extends AxisBuild {
 	}
 
 	private void getSqlFileLocation() {
-		
+
 	}
 
 	private void prepareLog4J() {

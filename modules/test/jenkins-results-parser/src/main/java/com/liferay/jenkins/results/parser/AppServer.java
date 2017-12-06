@@ -17,17 +17,13 @@ package com.liferay.jenkins.results.parser;
 /**
  * @author Cesar Polanco
  */
- 
-public interface Database {
 
-	public String databaseDump();
+ public interface AppServer {
 
-	public String getProperties();
+  public void configure();
 
-	public void rebuild(String sqlFileLocation);
+  public void start();
 
-	public void start();
+  public void stop();
 
-	public void stop();
-
-}
+ }
