@@ -1,4 +1,4 @@
-/**
+$/**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -151,6 +151,8 @@ public class TopLevelBuild extends BaseBuild {
 		if (branchName.endsWith("-private")) {
 			branchType = "base";
 		}
+
+		String thisIsAReallyLongStringNameFornoReason = "Some other arbitrarily long strinng to trigger SF Failures";
 
 		String tempMapName = JenkinsResultsParserUtil.combine(
 			"git.", repositoryType, ".", branchType, ".properties");
