@@ -3428,8 +3428,8 @@ information. Make sure to commit in all build services results.
 			<test-action>
 				<exec executable="git" failonerror="true" outputproperty="git.diff">
 					<arg value="diff" />
-					<arg value="--name-only" />
 					<arg value="${liferay.portal.branch}..HEAD" />
+					<arg value="--name-only" />
 				</exec>
 
 				<var name="format.current.branch" value="true" />
