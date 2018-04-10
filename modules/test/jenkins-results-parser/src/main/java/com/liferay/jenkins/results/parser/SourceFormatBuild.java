@@ -31,8 +31,18 @@ public class SourceFormatBuild extends TopLevelBuild {
 	}
 
 	@Override
+	public String getBranchName() {
+		return _pullRequest.getUpstreamBrancName();
+	}
+
+	@Override
 	public Element[] getBuildFailureElements() {
-		return new Element[] {getFailureMessageElement()};
+		return new Element[]{getFailureMessageElement()};
+	}
+
+	@Override
+	public String getBaseRepositorySHA(String repositoryName) {
+		return _pullRequest.getUpstreamBranchSHA();
 	}
 
 	protected SourceFormatBuild(String url) {
@@ -56,6 +66,53 @@ public class SourceFormatBuild extends TopLevelBuild {
 
 			new GenericFailureMessageGenerator()
 		};
+
+	@Override
+	protected String getTestSuiteReportString() {
+		return "ci:test:sf";
+	}
+
+	@Override
+	protected Element getGithubMessageElement() {
+		update();
+
+		Element rootElement = Dom4JUtil.getNewElement(
+			"html", null, getResultElement());
+
+		Element detailsElement = Dom4JUtil.getNewElement(
+			"details", rootElement,
+			Dom4JUtil.getNewElement(
+				"summary", null, "Click here for more details."),
+			Dom4JUtil.getNewElement("h4", null, "Base Branch:"),
+			getBaseBranchDetailsElement());
+
+		String result = getResult();
+
+		if ((result != null) && result.equals("SUCCESS")) {
+			successCount++;
+		}
+
+		Dom4JUtil.addToElement(
+			detailsElement, String.valueOf(successCount), " out of 1 jobs PASSED")
+
+		if (!result.equals("SUCCESS")) {
+			Dom4JUtil.addToElement(
+				detailsElement, getFailedJobSummaryElement());
+		}
+		else if (result.equals("SUCCESS")) {
+			Dom4JUtil.addToElement(
+				detailsElement, getSuccessfulJobSummaryElement());
+		}
+
+		Dom4JUtil.addToElement(detailsElement, getMoreDetailsElement());
+
+		if (!result.equals("SUCCESS")) {
+			Dom4JUtil.addToElement(
+				detailsElement, (Object[])getBuildFailureElements());
+		}
+
+		return rootElement;
+	}
 
 	private PullRequest _pullRequest;
 
