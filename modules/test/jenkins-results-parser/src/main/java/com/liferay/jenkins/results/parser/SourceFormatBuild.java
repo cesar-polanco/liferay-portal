@@ -42,7 +42,7 @@ public class SourceFormatBuild extends TopLevelBuild {
 
 	@Override
 	public Element[] getBuildFailureElements() {
-		return new Element[] {getFailureMessageElement()};
+		return new Element[]{getFailureMessageElement()};
 	}
 
 	@Override
@@ -57,7 +57,9 @@ public class SourceFormatBuild extends TopLevelBuild {
 			Dom4JUtil.getNewElement(
 				"summary", null, "Click here for more details."),
 			Dom4JUtil.getNewElement("h4", null, "Base Branch:"),
-			getBaseBranchDetailsElement());
+			getBaseBranchDetailsElement(),
+			Dom4JUtil.getNewElement("h4", null, "Sender Branch:"),
+			getSenderBranchDetailsElement());
 
 		String result = getResult();
 
@@ -75,7 +77,7 @@ public class SourceFormatBuild extends TopLevelBuild {
 			Dom4JUtil.addToElement(
 				detailsElement, getFailedJobSummaryElement());
 		}
-		else if (result.equals("SUCCESS")) {
+		else if (result.eq	uals("SUCCESS")) {
 			Dom4JUtil.addToElement(
 				detailsElement, getSuccessfulJobSummaryElement());
 		}
@@ -112,6 +114,33 @@ public class SourceFormatBuild extends TopLevelBuild {
 	@Override
 	protected String getTestSuiteReportString() {
 		return "ci:test:sf";
+	}
+
+	protected Element getSenderBranchDetailsElement() {
+		String repositoryName = _pullRequest.getRepositoryName();
+		String senderBranchName = _pullRequest.getSenderBranchName();
+		String senderSHA = _pullRequest.getSenderSHA();
+		String senderUsername = _pullRequest.getSenderUsername();
+
+		String senderBranchURL =
+			"https://github.com/" + senderUsername + "/" + repositoryName +
+				"/tree/" + senderBranchName;
+
+		String senderCommitURL =
+			"https://github.com/" + senderUsername + "/" + repositoryName +
+				"/commit/" + senderSHA;
+
+		Element senderBranchDetailsElement = Dom4JUtil.getNewElement(
+			"p", null, "Branch Name: ",
+			Dom4JUtil.getNewAnchorElement(senderBranchURL, senderBranchName));
+
+		Dom4JUtil.addToElement(
+			senderBranchDetailsElement,
+			Dom4JUtil.getNewElement("br"),
+			"Branch GIT ID: ",
+			Dom4JUtil.getNewAnchorElement(senderCommitURL, senderSHA));
+
+		return senderBranchDetailsElement;
 	}
 
 	private PullRequest _pullRequest;
