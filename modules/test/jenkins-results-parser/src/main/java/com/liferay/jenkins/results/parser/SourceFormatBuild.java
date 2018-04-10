@@ -31,49 +31,22 @@ public class SourceFormatBuild extends TopLevelBuild {
 	}
 
 	@Override
-	public String getBranchName() {
-		return _pullRequest.getUpstreamBrancName();
-	}
-
-	@Override
-	public Element[] getBuildFailureElements() {
-		return new Element[]{getFailureMessageElement()};
-	}
-
-	@Override
 	public String getBaseRepositorySHA(String repositoryName) {
 		return _pullRequest.getUpstreamBranchSHA();
 	}
 
-	protected SourceFormatBuild(String url) {
-		this(url, null);
-	}
-
-	protected SourceFormatBuild(String url, TopLevelBuild topLevelBuild) {
-		super(url, topLevelBuild);
-
-		_pullRequest = new PullRequest(getParameterValue("PULL_REQUEST_URL"));
+	@Override
+	public String getBranchName() {
+		return _pullRequest.getUpstreamBranchName();
 	}
 
 	@Override
-	protected FailureMessageGenerator[] getFailureMessageGenerators() {
-		return _FAILURE_MESSAGE_GENERATORS;
-	}
-
-	private static final FailureMessageGenerator[] _FAILURE_MESSAGE_GENERATORS =
-		{
-			new SourceFormatFailureMessageGenerator(),
-
-			new GenericFailureMessageGenerator()
-		};
-
-	@Override
-	protected String getTestSuiteReportString() {
-		return "ci:test:sf";
+	public Element[] getBuildFailureElements() {
+		return new Element[] {getFailureMessageElement()};
 	}
 
 	@Override
-	protected Element getGithubMessageElement() {
+	public Element getGitHubMessageElement() {
 		update();
 
 		Element rootElement = Dom4JUtil.getNewElement(
@@ -88,12 +61,15 @@ public class SourceFormatBuild extends TopLevelBuild {
 
 		String result = getResult();
 
+		int successCount = 0;
+
 		if ((result != null) && result.equals("SUCCESS")) {
 			successCount++;
 		}
 
 		Dom4JUtil.addToElement(
-			detailsElement, String.valueOf(successCount), " out of 1 jobs PASSED")
+			detailsElement, String.valueOf(successCount),
+			" out of 1 jobs PASSED");
 
 		if (!result.equals("SUCCESS")) {
 			Dom4JUtil.addToElement(
@@ -112,6 +88,30 @@ public class SourceFormatBuild extends TopLevelBuild {
 		}
 
 		return rootElement;
+	}
+
+	protected SourceFormatBuild(String url) {
+		this(url, null);
+	}
+
+	protected SourceFormatBuild(String url, TopLevelBuild topLevelBuild) {
+		super(url, topLevelBuild);
+
+		_pullRequest = new PullRequest(getParameterValue("PULL_REQUEST_URL"));
+	}
+
+	@Override
+	protected FailureMessageGenerator[] getFailureMessageGenerators() {
+		return new FailureMessageGenerator[] {
+			new SourceFormatFailureMessageGenerator(),
+
+			new GenericFailureMessageGenerator()
+		};
+	}
+
+	@Override
+	protected String getTestSuiteReportString() {
+		return "ci:test:sf";
 	}
 
 	private PullRequest _pullRequest;

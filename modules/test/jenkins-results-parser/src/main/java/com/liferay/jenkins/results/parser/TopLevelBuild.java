@@ -1204,7 +1204,7 @@ public class TopLevelBuild extends BaseBuild {
 				matcher.group("repositoryType"));
 		}
 
-		return null;CI_TEST_SUITE
+		return null;
 	}
 
 	@Override
