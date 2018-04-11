@@ -42,7 +42,7 @@ public class SourceFormatBuild extends TopLevelBuild {
 
 	@Override
 	public Element[] getBuildFailureElements() {
-		return new Element[]{getFailureMessageElement()};
+		return new Element[] {getFailureMessageElement()};
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class SourceFormatBuild extends TopLevelBuild {
 			Dom4JUtil.addToElement(
 				detailsElement, getFailedJobSummaryElement());
 		}
-		else if (result.eq	uals("SUCCESS")) {
+		else if (result.equals("SUCCESS")) {
 			Dom4JUtil.addToElement(
 				detailsElement, getSuccessfulJobSummaryElement());
 		}
@@ -111,20 +111,16 @@ public class SourceFormatBuild extends TopLevelBuild {
 		};
 	}
 
-	@Override
-	protected String getTestSuiteReportString() {
-		return "ci:test:sf";
-	}
-
 	protected Element getSenderBranchDetailsElement() {
 		String repositoryName = _pullRequest.getRepositoryName();
 		String senderBranchName = _pullRequest.getSenderBranchName();
-		String senderSHA = _pullRequest.getSenderSHA();
 		String senderUsername = _pullRequest.getSenderUsername();
 
 		String senderBranchURL =
 			"https://github.com/" + senderUsername + "/" + repositoryName +
 				"/tree/" + senderBranchName;
+
+		String senderSHA = _pullRequest.getSenderSHA();
 
 		String senderCommitURL =
 			"https://github.com/" + senderUsername + "/" + repositoryName +
@@ -135,12 +131,16 @@ public class SourceFormatBuild extends TopLevelBuild {
 			Dom4JUtil.getNewAnchorElement(senderBranchURL, senderBranchName));
 
 		Dom4JUtil.addToElement(
-			senderBranchDetailsElement,
-			Dom4JUtil.getNewElement("br"),
+			senderBranchDetailsElement, Dom4JUtil.getNewElement("br"),
 			"Branch GIT ID: ",
 			Dom4JUtil.getNewAnchorElement(senderCommitURL, senderSHA));
 
 		return senderBranchDetailsElement;
+	}
+
+	@Override
+	protected String getTestSuiteReportString() {
+		return "ci:test:sf";
 	}
 
 	private PullRequest _pullRequest;
