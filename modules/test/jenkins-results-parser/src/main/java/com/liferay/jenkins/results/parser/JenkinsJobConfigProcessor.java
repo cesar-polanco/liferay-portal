@@ -13,13 +13,21 @@
  */
 package com.liferay.jenkins.results.parser;
 
+import java.io.File;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
+//import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
 import org.apache.tools.ant.Project;
@@ -29,17 +37,17 @@ import org.apache.tools.ant.Project;
  */
 public class JenkinsJobConfigProcessor {
 
-	public static Map getEnvironmentSlavesMap() {
+	public static Map getEnvironmentSlavesMap(Project project) {
 		Map environmentSlavesMap = new TreeMap();
 
-		Map properties = project.getProperties();
+		Map<String, Object> properties = project.getProperties();
 
 		Set propertiesSet = properties.entrySet();
 
 		Iterator propertiesIterator = propertiesSet.iterator();
 
 		while (propertiesIterator.hasNext()) {
-			Map.Entry entry = (Map.Entry)propertiesIterator.next();
+			Map.Entry<String, String> entry = (Map.Entry)propertiesIterator.next();
 
 			String key = entry.getKey();
 
@@ -49,7 +57,7 @@ public class JenkinsJobConfigProcessor {
 
 			String propertyName = key.substring(key.indexOf("slaves(") + 7, key.indexOf(")"));
 
-			String value = entry.getValue();
+			String value = (String)entry.getValue();
 
 			if (value.contains("..")) {
 				value = JenkinsResultsParserUtil.expandSlaveRange(value);
@@ -80,14 +88,14 @@ public class JenkinsJobConfigProcessor {
 		return osxEnvironmentVariablesMap;
 	}
 
-	public static String getSlaveConfigXMLContent(String slaveHostname) {
+	public static String getSlaveConfigXMLContent(Map environmentSlavesMap, Map linuxEnvironmentVariablesMap, Map osxEnvironmentVariablesMap, String slaveHostname, Map windowsEnvironmentVariablesMap) {
 		String slaveLabel = slaveHostname;
 
 		if (environmentSlavesMap.containsKey(slaveHostname)) {
-			slaveLabel = environmentSlavesMap.get(slaveHostname);
+			slaveLabel = (String)environmentSlavesMap.get(slaveHostname);
 		}
 
-		sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
 		sb.append("<slave>\n");
 		sb.append("\t<name>" + slaveHostname + "</name>\n");
@@ -127,11 +135,11 @@ public class JenkinsJobConfigProcessor {
 	public static String getSlaveEnvironmentVariables(Map environmentVariablesMap, String hostname) {
 		environmentVariablesMap.put("HOSTNAME", hostname + ".lax.liferay.com");
 
-		sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
 		sb.append("\t\t\t\t\t<int>" + String.valueOf(environmentVariablesMap.size()) + "</int>\n");
 
-		Set environmentVariables = environmentVariablesMap.keySet();
+		Set<String> environmentVariables = (Set<String>)environmentVariablesMap.keySet();
 
 		for (String environmentVariable : environmentVariables) {
 			sb.append("\t\t\t\t\t<string>" + environmentVariable + "</string>\n");
@@ -152,7 +160,7 @@ public class JenkinsJobConfigProcessor {
 	}
 
 	public static void processJenkinsJobConfig(Project project) {
-		Map environmentSlavesMap = getEnvironmentSlavesMap();
+		Map environmentSlavesMap = getEnvironmentSlavesMap(project);
 		Set globalProperties = new TreeSet();
 		Map jobNamesToJobProperties = new TreeMap();
 		Map jobNamesToMasterJobProperties = new TreeMap();
@@ -171,7 +179,7 @@ public class JenkinsJobConfigProcessor {
 		Iterator propertiesIterator = propertiesSet.iterator();
 
 		while (propertiesIterator.hasNext()) {
-			Map.Entry entry = (Map.Entry)propertiesIterator.next();
+			Map.Entry<String, String> entry = (Map.Entry<String, String>)propertiesIterator.next();
 
 			String key = entry.getKey();
 			String value = entry.getValue();
@@ -189,9 +197,9 @@ public class JenkinsJobConfigProcessor {
 				masterHostnames.add(masterHostname);
 				masterHostnamesToJobNames.put(masterHostname, value);
 
-				Map childJobNamesMap = new HashMap();
-				List parentJobNames = new ArrayList();
-				Set topLevelJobNames = new TreeSet();
+				Map<String, String> childJobNamesMap = new HashMap<>();
+				List<String> parentJobNames = new ArrayList<>();
+				Set<String> topLevelJobNames = new TreeSet<>();
 
 				String currentParentJobName1 = null;
 				String currentParentJobName2 = null;
@@ -222,7 +230,7 @@ public class JenkinsJobConfigProcessor {
 
 					String jobShortName = jobName;
 
-					int x = jobShortName.indexOf("(");
+					x = jobShortName.indexOf("(");
 
 					if (x != -1) {
 						jobShortName = jobShortName.substring(0, x);
@@ -254,7 +262,7 @@ public class JenkinsJobConfigProcessor {
 						while (triggerBuilderMatcher.find()) {
 							String triggerBuilder = triggerBuilderMatcher.group(2);
 
-							int x = triggerBuilder.indexOf("<projects>");
+							x = triggerBuilder.indexOf("<projects>");
 							int y = triggerBuilder.indexOf("</projects>", x + 1);
 
 							String triggerBuilderChildJobName = triggerBuilder.substring(x + 10, y);
@@ -354,7 +362,7 @@ public class JenkinsJobConfigProcessor {
 					if (!childJobNames.contains(",")) {
 						System.out.println("ERROR: Parent job is missing children jobs: " + parentJobName + "\n");
 
-						throw Exception();
+						throw new Exception();
 					}
 
 					project.setProperty("child.job.names(" + parentJobName + ")", childJobNamesMap.get(parentJobName));
@@ -655,7 +663,7 @@ public class JenkinsJobConfigProcessor {
 						slaveHostname = slaveHostname.substring(0, slaveHostname.indexOf("("));
 					}
 
-					String slaveConfigXMLContent = getSlaveConfigXMLContent(slaveHostname);
+					String slaveConfigXMLContent = getSlaveConfigXMLContent(environmentSlavesMap, linuxEnvironmentVariablesMap, osxEnvironmentVariablesMap, slaveHostname, windowsEnvironmentVariablesMap);
 
 					project.setProperty(slaveHostname + ".config.xml.content", slaveConfigXMLContent);
 
