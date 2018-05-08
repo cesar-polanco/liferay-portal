@@ -42,8 +42,7 @@ public class AutoCloseUtil {
 			return false;
 		}
 
-		String githubReceiverUsername = project.getProperty(
-			"env.GITHUB_RECEIVER_USERNAME");
+		String githubReceiverUsername = project.getProperty("env.GITHUB_RECEIVER_USERNAME");
 		String githubSenderUsername = project.getProperty(
 			"env.GITHUB_SENDER_USERNAME");
 
