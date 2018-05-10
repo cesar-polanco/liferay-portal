@@ -3993,6 +3993,8 @@ war.path=${app.server.weblogic.portal.dir}/</echo>
 
 					<beanshell>
 						<![CDATA[
+							import java.io.File;
+
 							import org.apache.commons.io.FileUtils;
 
 							import org.apache.tools.ant.DirectoryScanner;
@@ -4002,9 +4004,17 @@ war.path=${app.server.weblogic.portal.dir}/</echo>
 
 								DirectoryScanner directoryScanner = new DirectoryScanner();
 
-								directoryScanner.setIncludes(new String[] {project.getProperty("test.app.server.dir") + "/logs/catalina.*.log"});
+								File logFile = new File(project.getProperty("test.app.server.dir"));
+
+								String canonicalLogFileLocation = logFile.getCanonicalPath();
+
+								System.out.println("canonicalLogFileLocation = " + canonicalLogFileLocation);
+
+								directoryScanner.setIncludes(new String[] {canonicalLogFileLocation + "/logs/catalina.*.log"});
 
 								directoryScanner.scan();
+
+								System.out.println("DIR COUNT: " + directoryScanner.getIncludedFiles().length);
 
 								for (String filePath : directoryScanner.getIncludedFiles()) {
 									String osName = project.getProperty("os.name");

@@ -2054,6 +2054,80 @@ app.server.type=@{app.server.type}]]></echo>
 		<run-empty-temp-dir-test />
 	</target>
 
+	<target name="faces-jdk8">
+  	<property name="liferay.faces.alloy.dir" value="/opt/dev/project/github/liferay-faces-alloy" />
+  	<property name="liferay.faces.bridges.impl.dir" value="/opt/dev/project/github/liferay-faces-bridge-impl" />
+  	<property name="liferay.faces.portal.dir" value="/opt/dev/project/github/liferay-faces-portal" />
+  	<property name="liferay.faces.showcase.dir" value="/opt/dev/project/github/liferay-faces-showcase" />
+
+		<property name="faces.war.files.zip.name" value="all_wars_zipped.zip" />
+		<property name="faces.war.file.url" value="/opt/dev/test_project/${faces.war.files.zip.name}" />
+
+  	<echo>Running with the following repositories:
+* ${project.dir}
+* ${liferay.faces.alloy.dir}
+* ${liferay.faces.bridges.impl.dir}
+* ${liferay.faces.portal.dir}
+* ${liferay.faces.showcase.dir}</echo>
+
+		<antcall target="prepare-portal-ext-properties" />
+
+		<!-- <mirrors-get
+			dest="${liferay.home}/deploy/"
+			src="${faces.war.file.url}"
+		/> -->
+
+		<copy
+			file="${faces.war.file.url}"
+			todir="${liferay.home}/deploy"
+		/>
+
+		<unzip
+			dest="${liferay.home}/deploy/"
+			src="${liferay.home}/deploy/${faces.war.files.zip.name}"
+		/>
+
+		<antcall target="start-app-server" />
+
+    <execute dir="${liferay.faces.showcase.dir}/jsf-showcase-webapp">
+    	mvn clean install -P selenium -Dit.test=none -DfailIfNoTests=false
+    </execute>
+
+    <execute dir="${liferay.faces.alloy.dir}/demo/alloy-showcase-webapp">
+    	mvn clean install -P selenium -Dit.test=none -DfailIfNoTests=false
+    </execute>
+
+    <execute dir="${liferay.faces.bridges.impl.dir}/test/integration">
+    	mvn clean install
+    </execute>
+
+    <execute dir="${liferay.faces.portal.dir}/test/integration">
+    	mvn clean install
+    </execute>
+
+		<execute dir="${liferay.faces.bridges.impl.dir}/tck/">
+    	mvn clean install
+    </execute>
+
+    <execute dir="${liferay.faces.bridges.impl.dir}/tck/bridge-tck-main-portlet">
+    	mvn verify -P selenium,firefox -Dwebdriver.firefox.bin=/opt/firefox-46.0/firefox
+    </execute>
+
+    <execute dir="${liferay.faces.bridges.impl.dir}/test/integration">
+    	mvn verify -P selenium,firefox -Dwebdriver.firefox.bin=/opt/firefox-46.0/firefox
+    </execute>
+
+    <execute dir="${liferay.faces.portal.dir}/test/integration">
+    	mvn verify -P selenium,firefox -Dwebdriver.firefox.bin=/opt/firefox-46.0/firefox
+    </execute>
+
+    <execute dir="${liferay.faces.portal.dir}/test/integration">
+    	mvn verify -P selenium-portal-showcase,firefox -Dwebdriver.firefox.bin=/opt/firefox-46.0/firefox
+    </execute>
+
+  	<!-- PLACEHOLDER: Need to find all the JUnit Test Results and pass them along to Testray -->
+	</target>
+
 	<target name="functional-bundle-jboss-db2105-jdk8">
 		<run-functional-test
 			app.server.type="jboss"
